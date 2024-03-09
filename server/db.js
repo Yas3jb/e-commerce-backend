@@ -14,7 +14,7 @@ const createTables = async () => {
     CREATE TABLE users (
         id UUID PRIMARY KEY,
         username VARCHAR(25) UNIQUE NOT NULL,
-        password VARCHAR(100) UNIQUE NOT
+        password VARCHAR(100) UNIQUE NOT NULL
     );
     CREATE TABLE products (
         id UUID PRIMARY KEY,
@@ -34,11 +34,11 @@ const createTables = async () => {
 };
 
 // create a User
-const createUser = async ({ username }) => {
+const createUser = async ({ username, password }) => {
   const SQL = `
-    INSTERT INTO users (id, username) VALUES ($1, $2) RETURNING *
+    INSERT INTO users (id, username, password) VALUES ($1, $2, $3) RETURNING *
     `;
-  const response = await client.query(SQL, [uuid.v4(), username]);
+  const response = await client.query(SQL, [uuid.v4(), username, password]);
   return response.rows[0];
 };
 
@@ -63,7 +63,7 @@ const fetchUsers = async () => {
     SELECT * FROM users
     `;
   const response = await client.query(SQL);
-  return response.rows[0];
+  return response.rows;
 };
 
 // Fetch Products
@@ -72,7 +72,7 @@ const fetchProducts = async () => {
     SELECT * FROM products
     `;
   const response = await client.query(SQL);
-  return response.rows[0];
+  return response.rows;
 };
 
 // Export modules
