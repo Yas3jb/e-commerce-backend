@@ -57,10 +57,30 @@ const createProduct = async ({ name, description, price, imageUrl }) => {
   return response.rows[0];
 };
 
+// Fetch Users
+const fetchUsers = async () => {
+  const SQL = `
+    SELECT * FROM users
+    `;
+  const response = await client.query(SQL);
+  return response.rows[0];
+};
+
+// Fetch Products
+const fetchProducts = async () => {
+  const SQL = `
+    SELECT * FROM products
+    `;
+  const response = await client.query(SQL);
+  return response.rows[0];
+};
+
 // Export modules
 module.exports = {
   client,
   createTables,
   createUser,
   createProduct,
+  fetchUsers,
+  fetchProducts,
 };
