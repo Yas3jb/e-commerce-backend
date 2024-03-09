@@ -14,6 +14,7 @@ const createTables = async () => {
     CREATE TABLE users (
         id UUID PRIMARY KEY,
         username VARCHAR(25) UNIQUE NOT NULL,
+        password VARCHAR(100) UNIQUE NOT
     );
     CREATE TABLE products (
         id UUID PRIMARY KEY,
@@ -30,4 +31,36 @@ const createTables = async () => {
     );
     `;
   await client.query(SQL);
+};
+
+// create a User
+const createUser = async ({ username }) => {
+  const SQL = `
+    INSTERT INTO users (id, username) VALUES ($1, $2) RETURNING *
+    `;
+  const response = await client.query(SQL, [uuid.v4(), username]);
+  return response.rows[0];
+};
+
+// create a Product
+const createProduct = async ({ name, description, price, imageUrl }) => {
+  const SQL = `
+    INSERT INTO products (id, name, description, price, imageUrl) VALUES ($1, $2, $3, $4, $5) RETURNING *
+    `;
+  const response = await client.query(SQL, [
+    uuid.v4(),
+    name,
+    description,
+    price,
+    imageUrl,
+  ]);
+  return response.rows[0];
+};
+
+// Export modules
+module.exports = {
+  client,
+  createTables,
+  createUser,
+  createProduct,
 };
