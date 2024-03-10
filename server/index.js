@@ -7,7 +7,7 @@ const {
   createTables,
   fetchUsers,
   fetchProducts,
-  fetchProductsByID,
+  fetchProductByID,
   createUser,
   authenticate,
   findUserByToken,
@@ -83,7 +83,7 @@ app.get("/api/products", async (req, res, next) => {
 // GET Single Product
 app.get("/api/products/:id", async (req, res, next) => {
   try {
-    const singleProduct = await fetchProductsByID(req.params.id);
+    const singleProduct = await fetchProductByID(req.params.id);
     res.send(singleProduct);
   } catch (err) {
     // error handling
@@ -100,7 +100,8 @@ app.get("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
       error.status = 401;
       throw error;
     }
-    res.send(await fetchCart(req.params.id));
+    const cartItems = await fetchCart(req.params.id);
+    res.send(cartItems);
   } catch (err) {
     next(err);
   }
