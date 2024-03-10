@@ -6,7 +6,12 @@ const dummyData = async () => {
   try {
     // Dummy User
     const user = await Promise.all([
-      createUser({ email: "yasmu213@gmail.com", password: "12345" }),
+      createUser({
+        first_name: "Yasin",
+        last_name: "B",
+        email: "yasmu213@gmail.com",
+        password: "12345",
+      }),
     ]);
 
     // Dummy Products
