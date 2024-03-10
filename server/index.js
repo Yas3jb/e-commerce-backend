@@ -11,6 +11,9 @@ const {
   createUser,
   authenticate,
   findUserByToken,
+  createCart,
+  deleteCart,
+  fetchCart,
 } = require("./db");
 const { dummyData } = require("./data");
 
@@ -88,6 +91,59 @@ app.get("/api/products/:id", async (req, res, next) => {
     next(err);
   }
 });
+
+// GET items in cart
+app.get("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
+  try {
+    if (req.params.id !== req.user.id) {
+      const error = Error("not authorized");
+      error.status = 401;
+      throw error;
+    }
+    res.send(await fetchCart(req.params.id));
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST items in cart
+app.post("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
+  try {
+    if (req.params.id !== req.user.id) {
+      const error = Error("not authorized");
+      error.status = 401;
+      throw error;
+    }
+    res.status(201).send(
+      await createCart({
+        user_id: req.params.id,
+        product_id: req.body.product_id,
+        quantity: req.body.quantity,
+      })
+    );
+  } catch (err) {
+    next(err);
+  }
+});
+
+// DELETE products in the cart
+app.delete(
+  "/api/users/:user_id/cart/:id",
+  isLoggedIn,
+  async (req, res, next) => {
+    try {
+      if (req.params.user_id !== req.user.id) {
+        const error = Error("not authorized");
+        error.status = 401;
+        throw error;
+      }
+      await deleteCart({ user_id: req.params.user_id, id: req.params.id });
+      res.sendStatus(204);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 // Create init function
 const init = async () => {
