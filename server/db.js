@@ -154,7 +154,7 @@ const fetchProducts = async () => {
 };
 
 // Fetch Single Product by ID
-const fetchProductsByID = async (id) => {
+const fetchProductByID = async (id) => {
   const SQL = `
     SELECT * FROM products
     WHERE id=$1
@@ -166,7 +166,12 @@ const fetchProductsByID = async (id) => {
 // Fetch items in cart
 const fetchCart = async (user_id) => {
   const SQL = `
-    SELECT * FROM cart where user_id = $1
+  SELECT products.name AS product, SUM(cart.quantity) AS total_quantity,
+  products.price AS unit_price, SUM(cart.quantity * products.price) AS total_price
+FROM cart
+JOIN products ON cart.product_id = products.id
+WHERE cart.user_id = $1
+GROUP BY products.name, products.price
   `;
   const response = await client.query(SQL, [user_id]);
   return response.rows;
@@ -180,7 +185,7 @@ module.exports = {
   createProduct,
   fetchUsers,
   fetchProducts,
-  fetchProductsByID,
+  fetchProductByID,
   authenticate,
   findUserByToken,
   createCart,
