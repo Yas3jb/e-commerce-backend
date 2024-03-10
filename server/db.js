@@ -75,6 +75,16 @@ const fetchProducts = async () => {
   return response.rows;
 };
 
+// Fetch Single Product by ID
+const fetchProductsByID = async (id) => {
+  const SQL = `
+    SELECT * FROM products
+    WHERE id=$1
+    `;
+  const response = await client.query(SQL, [id]);
+  return response.rows[0];
+};
+
 // Export modules
 module.exports = {
   client,
@@ -83,4 +93,5 @@ module.exports = {
   createProduct,
   fetchUsers,
   fetchProducts,
+  fetchProductsByID,
 };
