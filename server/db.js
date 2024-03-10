@@ -32,7 +32,8 @@ const createTables = async () => {
         id UUID PRIMARY KEY,
         quantity INTEGER NOT NULL,
         user_id UUID REFERENCES users(id) NOT NULL,
-        product_id UUID REFERENCES products(id) NOT NULL
+        product_id UUID REFERENCES products(id) NOT NULL,
+        CONSTRAINT unique_user_id_and_product_id UNIQUE (user_id, product_id)
     );
     `;
   await client.query(SQL);
@@ -68,6 +69,28 @@ const createProduct = async ({ name, description, price, imageUrl }) => {
     imageUrl,
   ]);
   return response.rows[0];
+};
+
+// Create Cart
+const createCart = async ({ user_id, product_id, quantity }) => {
+  const SQL = `
+  INSERT INTO cart (id, user_id, product_id, quantity) VALUES ($1, $2, $3, $4) RETURNING *
+  `;
+  const response = await client.query(SQL, [
+    uuid.v4(),
+    user_id,
+    product_id,
+    quantity,
+  ]);
+  return response.rows[0];
+};
+
+// Delete products in the cart
+const deleteCart = async ({ user_id, id }) => {
+  const SQL = `
+  DELETE FROM cart WHERE user_id = $1 AND id = $2
+  `;
+  await client.query(SQL, [uuid.v4(), id]);
 };
 
 // Authenticate a user based on email and password
@@ -140,6 +163,15 @@ const fetchProductsByID = async (id) => {
   return response.rows[0];
 };
 
+// Fetch items in cart
+const fetchCart = async (user_id) => {
+  const SQL = `
+    SELECT * FROM cart where user_id = $1
+  `;
+  const response = await client.query(SQL, [user_id]);
+  return response.rows;
+};
+
 // Export modules
 module.exports = {
   client,
@@ -151,4 +183,7 @@ module.exports = {
   fetchProductsByID,
   authenticate,
   findUserByToken,
+  createCart,
+  deleteCart,
+  fetchCart,
 };
