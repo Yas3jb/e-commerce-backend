@@ -5,17 +5,55 @@ const e = require("express");
 const {
   client,
   createTables,
-  createUser,
-  createProduct,
   fetchUsers,
   fetchProducts,
   fetchProductsByID,
+  createUser,
+  authenticate,
+  findUserByToken,
 } = require("./db");
 const { dummyData } = require("./data");
 
 const express = require("express");
 const app = express();
 app.use(express.json());
+
+// Middleware function to check if a user is logged in
+const isLoggedIn = async (req, res, next) => {
+  try {
+    req.user = await findUserByToken(req.headers.authorization);
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+// POST Register a new user
+app.post("/api/auth/register", async (req, res, next) => {
+  try {
+    res.send(await createUser(req.body));
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST Log in user
+app.post("/api/auth/login", async (req, res, next) => {
+  try {
+    res.send(await authenticate(req.body));
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET to retrieve user info
+app.get("/api/auth/me", isLoggedIn, async (req, res, next) => {
+  try {
+    res.send(await findUserByToken(req.headers.authorization));
+  } catch (err) {
+    next(err);
+  }
+});
 
 // GET Users
 app.get("/api/users", async (req, res, next) => {
