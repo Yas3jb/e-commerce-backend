@@ -11,6 +11,7 @@ const {
   fetchProducts,
   fetchProductsByID,
 } = require("./db");
+const { dummyData } = require("./data");
 
 const express = require("express");
 const app = express();
@@ -59,39 +60,11 @@ const init = async () => {
   await createTables();
   console.log("tables created");
 
-  // Dummy users and products
-  const dummy = await Promise.all([
-    createUser({ username: "yasin", password: "yas_pw" }),
-    createUser({ username: "edwin", password: "ed_pw" }),
-    createUser({ username: "kavin", password: "kav_pw" }),
-    createUser({ username: "liz", password: "liz_pw" }),
-    createProduct({
-      name: "laptop",
-      description: "High-performance laptop with a sleek design.",
-      price: 999.99,
-      imageUrl:
-        "https://m.media-amazon.com/images/I/51kK0BLesNL._AC_UF894,1000_QL80_.jpg",
-    }),
-    createProduct({
-      name: "smartwatch",
-      description: "Fitness tracker with heart rate monitor and GPS.",
-      price: 199.99,
-      imageUrl: "https://m.media-amazon.com/images/I/71TIOhVWQ5L.jpg",
-    }),
-    createProduct({
-      name: "tablet",
-      description: "Portable tablet for entertainment and productivity.",
-      price: 299.99,
-      imageUrl:
-        "https://m.media-amazon.com/images/I/51YFNAqxKDL._AC_SY780_.jpg",
-    }),
-    createProduct({
-      name: "smartphone",
-      description: "Latest smartphone model with advanced features.",
-      price: 699.0,
-      imageUrl: "https://m.media-amazon.com/images/I/51UtM-A3fdL.jpg",
-    }),
-  ]);
+  // Initialize dummy data
+  const { user, products } = await dummyData();
+
+  console.log("Dummy user:", user);
+  console.log("Dummy products:", products);
 
   console.log(await fetchUsers());
   console.log(await fetchProducts());
