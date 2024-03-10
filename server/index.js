@@ -9,6 +9,7 @@ const {
   createProduct,
   fetchUsers,
   fetchProducts,
+  fetchProductsByID,
 } = require("./db");
 
 const express = require("express");
@@ -33,6 +34,18 @@ app.get("/api/products", async (req, res, next) => {
   } catch (err) {
     // error handling
     res.status(500).json({ error: "Failed to load products" });
+    next(err);
+  }
+});
+
+// GET Single Product
+app.get("/api/products/:id", async (req, res, next) => {
+  try {
+    const singleProduct = await fetchProductsByID(req.params.id);
+    res.send(singleProduct);
+  } catch (err) {
+    // error handling
+    res.status(500).json({ error: "Failed to load the product" });
     next(err);
   }
 });
