@@ -13,7 +13,7 @@ const createTables = async () => {
     DROP TABLE IF EXISTS products;
     CREATE TABLE users (
         id UUID PRIMARY KEY,
-        username VARCHAR(25) UNIQUE NOT NULL,
+        email VARCHAR(25) UNIQUE NOT NULL,
         password VARCHAR(100) UNIQUE NOT NULL
     );
     CREATE TABLE products (
@@ -34,11 +34,11 @@ const createTables = async () => {
 };
 
 // create a User
-const createUser = async ({ username, password }) => {
+const createUser = async ({ email, password }) => {
   const SQL = `
-    INSERT INTO users (id, username, password) VALUES ($1, $2, $3) RETURNING *
+    INSERT INTO users (id, email, password) VALUES ($1, $2, $3) RETURNING *
     `;
-  const response = await client.query(SQL, [uuid.v4(), username, password]);
+  const response = await client.query(SQL, [uuid.v4(), email, password]);
   return response.rows[0];
 };
 
