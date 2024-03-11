@@ -90,7 +90,7 @@ const deleteCart = async ({ user_id, id }) => {
   const SQL = `
   DELETE FROM cart WHERE user_id = $1 AND id = $2
   `;
-  await client.query(SQL, [uuid.v4(), id]);
+  await client.query(SQL, [user_id, id]);
 };
 
 // Authenticate a user based on email and password
@@ -166,12 +166,14 @@ const fetchProductByID = async (id) => {
 // Fetch items in cart
 const fetchCart = async (user_id) => {
   const SQL = `
-  SELECT products.name AS product, SUM(cart.quantity) AS total_quantity,
-  products.price AS unit_price, SUM(cart.quantity * products.price) AS total_price
-FROM cart
-JOIN products ON cart.product_id = products.id
-WHERE cart.user_id = $1
-GROUP BY products.name, products.price
+    SELECT 
+    cart.id AS cart_id,
+    products.name AS product,
+    cart.quantity AS quantity,
+    products.price AS price,
+    (cart.quantity * products.price) AS total_price
+    FROM cart
+    JOIN products ON cart.product_id = products.id WHERE cart.user_id = $1
   `;
   const response = await client.query(SQL, [user_id]);
   return response.rows;
