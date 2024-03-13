@@ -18,7 +18,7 @@ function App() {
           <h2>Base URL</h2>
           <p>
             The base URL for all API endpoints is:
-            <code> https://your-domain.com/api</code>
+            <code> https://e-commerce-api-5fec.onrender.com/api</code>
           </p>
         </section>
         <hr />
