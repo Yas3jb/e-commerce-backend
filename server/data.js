@@ -1,4 +1,4 @@
-// Require createUser and createProduct functions
+// Import createUser and createProduct functions
 const { createUser, createProduct } = require("./db");
 
 // Function to initialize dummy data
@@ -7,9 +7,9 @@ const dummyData = async () => {
     // Dummy User
     const user = await Promise.all([
       createUser({
-        first_name: "Yasin",
-        last_name: "B",
-        email: "yasmu213@gmail.com",
+        first_name: "Example",
+        last_name: "One",
+        email: "example@gmail.com",
         password: "12345",
       }),
     ]);

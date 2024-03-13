@@ -1,25 +1,27 @@
-// Require Express
+// Import Express module
 const e = require("express");
+const express = require("express");
+// Create an Express application
+const app = express();
+// Middleware
+app.use(express.json());
 
-// Require Exported Modules
+// Import functions from "./db" file
 const {
   client,
-  createTables,
-  fetchUsers,
-  fetchProducts,
-  fetchProductByID,
-  createUser,
-  authenticate,
-  findUserByToken,
-  createCart,
-  deleteCart,
-  fetchCart,
+  createTables, // Function to create database tables
+  createUser, // Function to create a new user
+  createCart, // Function to create a new shopping cart
+  fetchUsers, // Function to fetch users
+  fetchProducts, // Function to fetch products
+  fetchProductByID, // Function to fetch a product by its ID
+  fetchCart, // Function to fetch the shopping cart
+  deleteCart, // Function to delete the shopping cart
+  authenticate, // Function to authenticate a user
+  findUserByToken, // Function to find a user by their authentication token
 } = require("./db");
+// Import dummyData object from the "./data" module
 const { dummyData } = require("./data");
-
-const express = require("express");
-const app = express();
-app.use(express.json());
 
 // Middleware function to check if a user is logged in
 const isLoggedIn = async (req, res, next) => {
@@ -42,7 +44,7 @@ app.post("/api/auth/register", async (req, res, next) => {
   }
 });
 
-// POST Log in user
+// POST Login user
 app.post("/api/auth/login", async (req, res, next) => {
   try {
     res.send(await authenticate(req.body));
@@ -54,7 +56,7 @@ app.post("/api/auth/login", async (req, res, next) => {
 // GET to retrieve user info
 app.get("/api/auth/me", isLoggedIn, async (req, res, next) => {
   try {
-    res.send(await findUserByToken(req.headers.authorization));
+    res.send({ user: req.user, cart: req.cart });
   } catch (err) {
     next(err);
   }
@@ -159,13 +161,7 @@ const init = async () => {
 
   // Initialize dummy data
   const { user, products } = await dummyData();
-
-  console.log("Dummy user:", user);
-  console.log("Dummy products:", products);
-
-  console.log(await fetchUsers());
-  console.log(await fetchProducts());
-
+  // Express server to listen
   app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 };
 

@@ -1,10 +1,14 @@
-// imports packages
+// import pg
 const pg = require("pg");
+// Create new client
 const client = new pg.Client(
   process.env.DATABASE_URL || "postgres://localhost/e_commerce_db"
 );
+// Import uuid
 const uuid = require("uuid");
+// Import bcrypt
 const bcrypt = require("bcrypt");
+// Import jsonwebtoken
 const jwt = require("jsonwebtoken");
 const JWT = process.env.JWT || "shhh";
 
@@ -39,7 +43,7 @@ const createTables = async () => {
   await client.query(SQL);
 };
 
-// create a User
+// Create a User
 const createUser = async ({ first_name, last_name, email, password }) => {
   // Create hashed password to be stored in the database to be used for Authentication
   const hashedPassword = await bcrypt.hash(password, 10); // without this line can't login after creating an account
@@ -56,7 +60,7 @@ const createUser = async ({ first_name, last_name, email, password }) => {
   return response.rows[0];
 };
 
-// create a Product
+// Create a Product
 const createProduct = async ({ name, description, price, imageUrl }) => {
   const SQL = `
     INSERT INTO products (id, name, description, price, imageUrl) VALUES ($1, $2, $3, $4, $5) RETURNING *
