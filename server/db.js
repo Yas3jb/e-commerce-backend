@@ -124,7 +124,7 @@ const findUserByToken = async (token) => {
     throw error;
   }
   const SQL = `
-  SELECT id, email FROM users WHERE id = $1
+  SELECT id, first_name, last_name, email FROM users WHERE id = $1
   `;
   const response = await client.query(SQL, [id]);
   if (!response.rows.length) {
@@ -132,7 +132,16 @@ const findUserByToken = async (token) => {
     error.status = 401;
     throw error;
   }
-  return response.rows[0];
+  const user = response.rows[0];
+  // Fetch cart products for user
+  const cartSQL = `
+  SELECT products.name AS product, cart.quantity AS quantity, products.price, (cart.quantity * products.price) AS total_price FROM cart
+  JOIN products ON cart.product_id = products.id
+  WHERE cart.user_id = $1
+  `;
+  const cartResponse = await client.query(cartSQL, [id]);
+  const cartProducts = cartResponse.rows;
+  return { user: user, cart: cartProducts };
 };
 
 // Fetch Users
