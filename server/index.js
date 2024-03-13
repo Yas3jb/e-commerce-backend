@@ -24,7 +24,9 @@ app.use(express.json());
 // Middleware function to check if a user is logged in
 const isLoggedIn = async (req, res, next) => {
   try {
-    req.user = await findUserByToken(req.headers.authorization);
+    const { user, cart } = await findUserByToken(req.headers.authorization);
+    req.user = user;
+    req.cart = cart;
     next();
   } catch (err) {
     next(err);
