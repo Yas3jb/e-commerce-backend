@@ -15,7 +15,7 @@ const JWT = process.env.JWT || "shhh";
 // Create Tables
 const createTables = async () => {
   const SQL = `
-    DROP TABLE IF EXISTS cart CASCADE;
+    DROP TABLE IF EXISTS cart;
     DROP TABLE IF EXISTS products CASCADE;
     DROP TABLE IF EXISTS users CASCADE;
     CREATE TABLE users (
@@ -36,8 +36,7 @@ const createTables = async () => {
         id UUID PRIMARY KEY,
         quantity INTEGER NOT NULL,
         user_id UUID REFERENCES users(id) NOT NULL,
-        product_id UUID REFERENCES products(id) NOT NULL,
-        CONSTRAINT unique_user_id_and_product_id UNIQUE (user_id, product_id)
+        product_id UUID REFERENCES products(id) NOT NULL
     );
     `;
   await client.query(SQL);
