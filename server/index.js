@@ -23,6 +23,14 @@ const {
 // Import dummyData object from the "./data" module
 const { dummyData } = require("./data");
 
+// static routes here (you only need these for deployment)
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+// app routes here
+app.get("/", (req, res) =>
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"))
+);
+
 // Middleware function to check if a user is logged in
 const isLoggedIn = async (req, res, next) => {
   try {
