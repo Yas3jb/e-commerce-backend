@@ -15,7 +15,7 @@ const JWT = process.env.JWT || "shhh";
 // Create Tables
 const createTables = async () => {
   const SQL = `
-    DROP TABLE IF EXISTS cart;
+    DROP TABLE IF EXISTS cart CASCADE;
     DROP TABLE IF EXISTS products CASCADE;
     DROP TABLE IF EXISTS users CASCADE;
     CREATE TABLE users (
