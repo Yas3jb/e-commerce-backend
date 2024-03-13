@@ -5,6 +5,8 @@ const express = require("express");
 const app = express();
 // Middleware
 app.use(express.json());
+// Import path
+const path = require("path");
 
 // Import functions from "./db" file
 const {
