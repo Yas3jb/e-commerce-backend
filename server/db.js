@@ -36,7 +36,8 @@ const createTables = async () => {
         id UUID PRIMARY KEY,
         quantity INTEGER NOT NULL,
         user_id UUID REFERENCES users(id) NOT NULL,
-        product_id UUID REFERENCES products(id) NOT NULL
+        product_id UUID REFERENCES products(id) NOT NULL,
+        CONSTRAINT unique_user_id_and_product_id UNIQUE (user_id, product_id)
     );
     `;
   await client.query(SQL);
