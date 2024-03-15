@@ -37,7 +37,7 @@ const createTables = async () => {
         quantity INTEGER NOT NULL,
         user_id UUID REFERENCES users(id) NOT NULL,
         product_id UUID REFERENCES products(id) NOT NULL,
-        CONSTRAINT unique_product_users UNIQUE (product_id)
+        CONSTRAINT unique_cart_entry UNIQUE (user_id, product_id)
     );
     `;
   await client.query(SQL);
