@@ -1,10 +1,13 @@
 // Import Express module
 const e = require("express");
 const express = require("express");
+// Import cors module
+const cors = require("cors");
 // Create an Express application
 const app = express();
 // Middleware
 app.use(express.json());
+app.use(cors());
 // Import path
 const path = require("path");
 
