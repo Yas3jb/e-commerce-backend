@@ -24,9 +24,11 @@ const {
   deleteCart, // Function to delete the shopping cart
   authenticate, // Function to authenticate a user
   findUserByToken, // Function to find a user by their authentication token
+  fetchCategories, // Function to fetch all categories
 } = require("./db");
 // Import dummyData object from the "./data" module
 const { dummyData } = require("./data");
+const { log } = require("console");
 
 // static routes here (you only need these for deployment)
 app.use(express.static(path.join(__dirname, "../client/dist")));
@@ -109,6 +111,17 @@ app.get("/api/products/:id", async (req, res, next) => {
   }
 });
 
+// GET Categories
+app.get("/api/category", async (req, res, next) => {
+  try {
+    res.send(await fetchCategories());
+  } catch (err) {
+    // error handling
+    res.status(500).json({ error: "Failed to load products" });
+    next(err);
+  }
+});
+
 // GET items in cart
 app.get("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
   try {
@@ -173,7 +186,8 @@ const init = async () => {
   console.log("tables created");
 
   // Initialize dummy data
-  const { user, products } = await dummyData();
+  await dummyData();
+  console.log("dummy data created");
   // Express server to listen
   app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 };

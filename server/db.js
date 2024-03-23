@@ -18,6 +18,8 @@ const createTables = async () => {
     DROP TABLE IF EXISTS cart;
     DROP TABLE IF EXISTS products CASCADE;
     DROP TABLE IF EXISTS users CASCADE;
+    DROP TABLE IF EXISTS categories;
+
     CREATE TABLE users (
         id UUID PRIMARY KEY,
         first_name VARCHAR(30) NOT NULL,
@@ -25,12 +27,17 @@ const createTables = async () => {
         email VARCHAR(25) UNIQUE NOT NULL,
         password VARCHAR(100) NOT NULL
     );
+    CREATE TABLE categories (
+      id UUID PRIMARY KEY,
+      name VARCHAR(20) UNIQUE NOT NULL
+    );
     CREATE TABLE products (
         id UUID PRIMARY KEY,
         name VARCHAR(50) UNIQUE NOT NULL,
         description TEXT,
         price DECIMAL(10,2) NOT NULL,
-        imageUrl VARCHAR(255)
+        imageUrl VARCHAR(255),
+        category_id UUID REFERENCES categories(id) NOT NULL
     );
     CREATE TABLE cart (
         id UUID PRIMARY KEY,
@@ -61,17 +68,64 @@ const createUser = async ({ first_name, last_name, email, password }) => {
 };
 
 // Create a Product
-const createProduct = async ({ name, description, price, imageUrl }) => {
-  const SQL = `
-    INSERT INTO products (id, name, description, price, imageUrl) VALUES ($1, $2, $3, $4, $5) RETURNING *
+const createProduct = async ({
+  name,
+  description,
+  price,
+  imageUrl,
+  category,
+}) => {
+  try {
+    // Check if the category exists, if not, create it
+    const categorySQL = `
+      INSERT INTO categories (id, name) 
+      VALUES ($1, $2)
+      ON CONFLICT (name) DO NOTHING
+      RETURNING id
     `;
-  const response = await client.query(SQL, [
-    uuid.v4(),
-    name,
-    description,
-    price,
-    imageUrl,
-  ]);
+    const categoryResponse = await client.query(categorySQL, [
+      uuid.v4(),
+      category,
+    ]);
+
+    // Retrieve the category ID
+    let categoryId = categoryResponse.rows[0]?.id;
+    if (!categoryId) {
+      const getCategorySQL = `
+        SELECT id FROM categories WHERE name = $1
+      `;
+      const categoryResult = await client.query(getCategorySQL, [category]);
+      categoryId = categoryResult.rows[0].id;
+    }
+
+    // Insert the product with the retrieved category ID
+    const productSQL = `
+      INSERT INTO products (id, name, description, price, imageUrl, category_id) 
+      VALUES ($1, $2, $3, $4, $5, $6) 
+      RETURNING *
+    `;
+    const productResponse = await client.query(productSQL, [
+      uuid.v4(),
+      name,
+      description,
+      price,
+      imageUrl,
+      categoryId,
+    ]);
+
+    return productResponse.rows[0];
+  } catch (error) {
+    console.error("Error creating product:", error);
+    throw error;
+  }
+};
+
+// Create a Category
+const createCategory = async ({ name }) => {
+  const SQL = `
+    INSERT INTO categories (id, name) VALUES ($1, $2) RETURNING *
+    `;
+  const response = await client.query(SQL, [uuid.v4(), name]);
   return response.rows[0];
 };
 
@@ -166,6 +220,15 @@ const fetchProducts = async () => {
   return response.rows;
 };
 
+// Fetch Products
+const fetchCategories = async () => {
+  const SQL = `
+    SELECT * FROM categories
+    `;
+  const response = await client.query(SQL);
+  return response.rows;
+};
+
 // Fetch Single Product by ID
 const fetchProductByID = async (id) => {
   const SQL = `
@@ -206,4 +269,6 @@ module.exports = {
   createCart,
   deleteCart,
   fetchCart,
+  createCategory,
+  fetchCategories,
 };
