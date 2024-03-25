@@ -140,17 +140,21 @@ const dummyData = async () => {
         category: "Men",
       }),
       createProduct({
-        name: "product1",
-        description: "des1",
+        name: "V-Neck Cotton Tee",
+        description:
+          "Upgrade your basics with this V-neck tee, crafted from soft cotton for superior comfort",
         price: 13.99,
-        imageUrl: "url1",
+        imageUrl:
+          "https://www.cottonheritage.com/catImg/WAMHIRES/mc1047_120122165339.jpg",
         category: "Men",
       }),
       createProduct({
-        name: "pr",
-        description: "Portablery",
+        name: "Black Zip-Up Hoodie",
+        description:
+          "Versatile black zip-up hoodie, perfect for layering or casual wear",
         price: 32.99,
-        imageUrl: "ut",
+        imageUrl:
+          "https://m.media-amazon.com/images/I/61KqH6G5s3L._AC_UY1000_.jpg",
         category: "Men",
       }),
       createProduct({
