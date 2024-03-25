@@ -220,7 +220,7 @@ const fetchProducts = async () => {
   return response.rows;
 };
 
-// Fetch Products
+// Fetch Categories
 const fetchCategories = async () => {
   const SQL = `
     SELECT * FROM categories
@@ -233,6 +233,16 @@ const fetchCategories = async () => {
 const fetchProductByID = async (id) => {
   const SQL = `
     SELECT * FROM products
+    WHERE id=$1
+    `;
+  const response = await client.query(SQL, [id]);
+  return response.rows[0];
+};
+
+// Fetch category by ID
+const fetchCategoryByID = async (id) => {
+  const SQL = `
+    SELECT * FROM categories
     WHERE id=$1
     `;
   const response = await client.query(SQL, [id]);
@@ -271,4 +281,5 @@ module.exports = {
   fetchCart,
   createCategory,
   fetchCategories,
+  fetchCategoryByID,
 };
