@@ -1,5 +1,4 @@
 // Import Express module
-const e = require("express");
 const express = require("express");
 // Import cors module
 const cors = require("cors");
@@ -173,7 +172,7 @@ const init = async () => {
   console.log("tables created");
 
   // Initialize dummy data
-  const { user, products } = await dummyData();
+  await dummyData();
   // Express server to listen
   app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 };
