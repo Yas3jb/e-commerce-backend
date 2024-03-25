@@ -25,6 +25,7 @@ const {
   authenticate, // Function to authenticate a user
   findUserByToken, // Function to find a user by their authentication token
   fetchCategories, // Function to fetch all categories
+  fetchCategoryByID, // Function to retrieve categories by its ID
 } = require("./db");
 // Import dummyData object from the "./data" module
 const { dummyData } = require("./data");
@@ -104,6 +105,18 @@ app.get("/api/products/:id", async (req, res, next) => {
   try {
     const singleProduct = await fetchProductByID(req.params.id);
     res.send(singleProduct);
+  } catch (err) {
+    // error handling
+    res.status(500).json({ error: "Failed to load the product" });
+    next(err);
+  }
+});
+
+// GET Single Category
+app.get("/api/category/:id", async (req, res, next) => {
+  try {
+    const singleCategory = await fetchCategoryByID(req.params.id);
+    res.send(singleCategory);
   } catch (err) {
     // error handling
     res.status(500).json({ error: "Failed to load the product" });
