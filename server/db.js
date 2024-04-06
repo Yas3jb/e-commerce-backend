@@ -17,8 +17,9 @@ const createTables = async () => {
   const SQL = `
     DROP TABLE IF EXISTS cart;
     DROP TABLE IF EXISTS products CASCADE;
+    DROP TABLE IF EXISTS categories CASCADE;
     DROP TABLE IF EXISTS users CASCADE;
-    DROP TABLE IF EXISTS categories;
+    
 
     CREATE TABLE users (
         id UUID PRIMARY KEY,
@@ -27,18 +28,21 @@ const createTables = async () => {
         email VARCHAR(25) UNIQUE NOT NULL,
         password VARCHAR(100) NOT NULL
     );
+
     CREATE TABLE categories (
       id UUID PRIMARY KEY,
-      name VARCHAR(20) UNIQUE NOT NULL
-    );
+      name VARCHAR(100) UNIQUE NOT NULL
+      );
+    
     CREATE TABLE products (
         id UUID PRIMARY KEY,
-        name VARCHAR(50) UNIQUE NOT NULL,
+        name VARCHAR(100) UNIQUE NOT NULL,
         description TEXT,
         price DECIMAL(10,2) NOT NULL,
         imageUrl VARCHAR(255),
-        category_id UUID REFERENCES categories(id) NOT NULL
+        category_name VARCHAR REFERENCES categories(name) NOT NULL
     );
+
     CREATE TABLE cart (
         id UUID PRIMARY KEY,
         quantity INTEGER NOT NULL,
@@ -73,58 +77,27 @@ const createProduct = async ({
   description,
   price,
   imageUrl,
-  category,
+  category_name,
 }) => {
-  try {
-    // Check if the category exists, if not, create it
-    const categorySQL = `
-      INSERT INTO categories (id, name) 
-      VALUES ($1, $2)
-      ON CONFLICT (name) DO NOTHING
-      RETURNING id
-    `;
-    const categoryResponse = await client.query(categorySQL, [
-      uuid.v4(),
-      category,
-    ]);
-
-    // Retrieve the category ID
-    let categoryId = categoryResponse.rows[0]?.id;
-    if (!categoryId) {
-      const getCategorySQL = `
-        SELECT id FROM categories WHERE name = $1
-      `;
-      const categoryResult = await client.query(getCategorySQL, [category]);
-      categoryId = categoryResult.rows[0].id;
-    }
-
-    // Insert the product with the retrieved category ID
-    const productSQL = `
-      INSERT INTO products (id, name, description, price, imageUrl, category_id) 
-      VALUES ($1, $2, $3, $4, $5, $6) 
-      RETURNING *
-    `;
-    const productResponse = await client.query(productSQL, [
-      uuid.v4(),
-      name,
-      description,
-      price,
-      imageUrl,
-      categoryId,
-    ]);
-
-    return productResponse.rows[0];
-  } catch (error) {
-    console.error("Error creating product:", error);
-    throw error;
-  }
+  const SQL = `
+    INSERT INTO products(id, name, description, price, imageUrl, category_name) VALUES($1, $2, $3, $4, $5, $6) RETURNING *
+  `;
+  const response = await client.query(SQL, [
+    uuid.v4(),
+    name,
+    description,
+    price,
+    imageUrl,
+    category_name,
+  ]);
+  return response.rows[0];
 };
 
 // Create a Category
-const createCategory = async ({ name }) => {
+const createCategories = async ({ name }) => {
   const SQL = `
-    INSERT INTO categories (id, name) VALUES ($1, $2) RETURNING *
-    `;
+    INSERT INTO categories (id, name) VALUES($1, $2) RETURNING *
+  `;
   const response = await client.query(SQL, [uuid.v4(), name]);
   return response.rows[0];
 };
@@ -190,23 +163,14 @@ const findUserByToken = async (token) => {
     error.status = 401;
     throw error;
   }
-  const user = response.rows[0];
-  // Fetch cart products for user
-  const cartSQL = `
-  SELECT products.name AS product, cart.quantity AS quantity, products.price, (cart.quantity * products.price) AS total_price FROM cart
-  JOIN products ON cart.product_id = products.id
-  WHERE cart.user_id = $1
-  `;
-  const cartResponse = await client.query(cartSQL, [id]);
-  const cartProducts = cartResponse.rows;
-  return { user: user, cart: cartProducts };
+  return response.rows[0];
 };
 
 // Fetch Users
 const fetchUsers = async () => {
   const SQL = `
-    SELECT * FROM users
-    `;
+    SELECT id, email FROM users;
+  `;
   const response = await client.query(SQL);
   return response.rows;
 };
@@ -215,15 +179,6 @@ const fetchUsers = async () => {
 const fetchProducts = async () => {
   const SQL = `
     SELECT * FROM products
-    `;
-  const response = await client.query(SQL);
-  return response.rows;
-};
-
-// Fetch Categories
-const fetchCategories = async () => {
-  const SQL = `
-    SELECT * FROM categories
     `;
   const response = await client.query(SQL);
   return response.rows;
@@ -239,14 +194,23 @@ const fetchProductByID = async (id) => {
   return response.rows[0];
 };
 
-// Fetch category by ID
-const fetchCategoryByID = async (id) => {
+// Fetch categores
+const fetchCategories = async () => {
   const SQL = `
     SELECT * FROM categories
-    WHERE id=$1
     `;
-  const response = await client.query(SQL, [id]);
-  return response.rows[0];
+  const response = await client.query(SQL);
+  return response.rows;
+};
+
+// Fetch Single Category by ID
+const fetchCategoryByID = async (category_name) => {
+  const SQL = `
+    SELECT * FROM products
+    WHERE category_name=$1
+    `;
+  const response = await client.query(SQL, [category_name]);
+  return response.rows;
 };
 
 // Fetch items in cart
@@ -279,7 +243,7 @@ module.exports = {
   createCart,
   deleteCart,
   fetchCart,
-  createCategory,
+  createCategories,
   fetchCategories,
   fetchCategoryByID,
 };

@@ -1,5 +1,5 @@
-// Import createUser and createProduct functions
-const { createUser, createProduct, createCategory } = require("./db");
+// Import User, Products and Categories functions
+const { createUser, createProduct, createCategories } = require("./db");
 
 // Function to initialize dummy data
 const dummyData = async () => {
@@ -14,204 +14,217 @@ const dummyData = async () => {
       }),
     ]);
 
-    // Dummy Category
     const categories = await Promise.all([
-      createCategory({
-        name: "Electronics",
-      }),
-      createCategory({
-        name: "Men",
-      }),
-      createCategory({
-        name: "Women",
-      }),
-      createCategory({
-        name: "Kids",
-      }),
+      createCategories({ name: "Laptop" }),
+      createCategories({ name: "Smartphone" }),
+      createCategories({ name: "Gaming" }),
+      createCategories({ name: "Camera" }),
     ]);
 
     // Dummy Products
     const products = await Promise.all([
       // Electronics
       createProduct({
-        name: "laptop",
-        description: "High-performance laptop with a sleek design.",
-        price: 999.99,
+        name: "Apple - MacBook Pro 14",
+        description:
+          "The 14-inch MacBook Pro blasts forward with M3 Pro and M3 Max, radically advanced chips that drive even greater performance for more demanding workflows. With industry-leading battery life—up to 18 hours—and a beautiful Liquid Retina XDR display, it’s a pro laptop without equal. Now in a new color: Space Black.",
+        price: 1799.0,
         imageUrl:
-          "https://m.media-amazon.com/images/I/51kK0BLesNL._AC_UF894,1000_QL80_.jpg",
-        category: "Electronics",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6534/6534615_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Laptop",
       }),
       createProduct({
-        name: "smartwatch",
-        description: "Fitness tracker with heart rate monitor and GPS.",
-        price: 199.99,
-        imageUrl: "https://m.media-amazon.com/images/I/71TIOhVWQ5L.jpg",
-        category: "Electronics",
+        name: "Apple - MacBook Air 15",
+        description:
+          "The 15-inch MacBook Air is impossibly thin and has a stunning Liquid Retina display. Supercharged by the M2 chip—and with up to 18 hours of battery life¹—it delivers incredible performance in an ultraportable design.",
+        price: 1199.0,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6534/6534601_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Laptop",
       }),
       createProduct({
-        name: "tablet",
-        description: "Portable tablet for entertainment and productivity.",
+        name: "HP - 15.6 Touch-Screen Laptop - Intel Core i3",
+        description:
+          "Do more from anywhere. All-day long. Designed to keep you productive and entertained from anywhere, the HP 15.6-inch Laptop PC combines long lasting battery life with a thin and portable, microedge bezel design. ",
+        price: 329.99,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6550/6550428_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Laptop",
+      }),
+      createProduct({
+        name: "Acer - Chromebook Spin 714 Intel Evo",
+        description:
+          "Powered by the Intel Evo platform, the 2-in-1 high-performance Acer Chromebook Spin 714 empowers users to stay productive anywhere with its 16:10 14” WUXGA touch display, 13th Gen Intel Core i5 processor, QHD webcam and military-grade durability. At just over 3 lbs., this sleek machine is not only fast and efficient, but it features a bevy of features such as a quick-chargeable 10-hour battery and a 360 convertible hinge so you have the flexibility to work in any mode. ",
+        price: 519.99,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6541/6541841_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Laptop",
+      }),
+      createProduct({
+        name: "Lenovo - IdeaPad Duet 5 Chromebook - 13.3",
+        description:
+          "The thin and light 13 IdeaPad Duet 5 Chromebook now packs a brilliant OLED 1920 x 1080 touch screen featuring narrow bezels for true blacks and a cinematic experience, as well as four speakers for clear and resonant audio. Get Minecraft and 3 months of Realms Plus at no cost* with purchase of a new Chromebook. Terms Apply. *Offer valid for qualifying Chromebooks purchased on or after July 1st, 2023 through September 30th, 2023 while supplies last. ",
+        price: 359.0,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6477/6477625_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Laptop",
+      }),
+      createProduct({
+        name: "Acer - Predator Helios Neo 16 WUXGA 165Hz IPS Gaming",
+        description:
+          "When you brandish this Predator Helios Neo gaming laptop, you’re holding the key to unlocking your ambitions – your curiosities – and endless possibilities. Suit up, strap in – and let Helios Neo pave the way. Equipped with superior cooling technology and a trove of performance like NVIDIA GeForce RTX 4050 laptop graphics and the latest 13th Gen Intel Core i5 processor with new performance hybrid architecture– this gaming laptop will be your guide to gaming bliss.",
+        price: 799.99,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6541/6541305_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Laptop",
+      }),
+      createProduct({
+        name: "Lenovo - Legion Slim 5 16",
+        description:
+          "Equipped with AMD RyzenTM 7000 Series processors and NVIDIA GeForce RTXTM 40 Series graphics, the Lenovo Legion Slim 5 is built for students and young creatives who demand a machine that can handle both extreme pro-level gaming sessions and advanced rendering work. ",
+        price: 1349.99,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6534/6534469_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Laptop",
+      }),
+      createProduct({
+        name: "HP - 14 Laptop - Intel Celeron - 4GB Memory",
+        description:
+          "Do more from anywhere. All-day long. Designed to keep you productive and entertained from anywhere, the HP 14 inch Laptop PC combines long battery life with a thin and portable, micro-edge bezel design. ",
+        price: 169.0,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6569/6569835_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Laptop",
+      }),
+      createProduct({
+        name: "Apple - iPhone 15 Pro Max 256GB - Black",
+        description:
+          "iPhone 15 Pro Max. Forged in titanium and featuring the groundbreaking A17 Pro chip, a customizable Action button, and the most powerful iPhone camera system ever. ",
+        price: 1199.99,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6525/6525421_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Smartphone",
+      }),
+      createProduct({
+        name: "Apple - iPhone 15 256GB - Blue",
+        description:
+          "iPhone 15 brings you Dynamic Island, a 48MP Main camera, and USB-C—all in a durable color-infused glass and aluminum design.",
+        price: 929.99,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6418/6418013_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Smartphone",
+      }),
+      createProduct({
+        name: "Apple - iPhone 13 5G 128GB - Midnight",
+        description:
+          "iPhone 13. The most advanced dual-camera system ever on iPhone. Lightning-fast A15 Bionic chip. A big leap in battery life. Durable design. Superfast 5G.¹ And a brighter Super Retina XDR display.",
+        price: 629.99,
+        imageUrl:
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6417/6417788_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Smartphone",
+      }),
+      createProduct({
+        name: "Apple - iPhone SE (3rd Generation) 64GB - Black",
+        description:
+          "Lightning-fast A15 Bionic chip and fast 5G.1 Big-time battery life and a superstar camera. Plus, the toughest glass in a smartphone and a Home button with secure Touch ID. ",
         price: 299.99,
         imageUrl:
-          "https://m.media-amazon.com/images/I/51YFNAqxKDL._AC_SY780_.jpg",
-        category: "Electronics",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6507/6507470_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Smartphone",
       }),
       createProduct({
-        name: "Smart LED Light",
-        description: "50ft Smart Led Strip Lights for Bedroom",
-        price: 13.99,
-        imageUrl:
-          "https://m.media-amazon.com/images/I/81mLzAeSdoL._AC_UF894,1000_QL80_.jpg",
-        category: "Electronics",
-      }),
-      createProduct({
-        name: "Power Bank",
-        description: "Portable Charger 26800mAh 22.5W Fast Charging Battery",
-        price: 32.99,
-        imageUrl:
-          "https://m.media-amazon.com/images/I/81D9rG8YbgL._AC_UF894,1000_QL80_.jpg",
-        category: "Electronics",
-      }),
-      createProduct({
-        name: "Beats Studio Buds",
+        name: "Samsung - Galaxy Z Fold5 256GB - Icy Blue",
         description:
-          "True Wireless Noise Cancelling Earbuds, Enhanced Apple & Android",
-        price: 169.95,
+          "Unfold an expansive screen and immerse yourself in your favorite entertainment on the go with Galaxy Z Fold5. The massive 7.6” interior screen opens up to elevate your streaming and gaming. Dual App Viewing allows you to master multitasking across multiple windows at once. And when folded, the front display is perfect for one handed use on the fly. Go big. Live large. With Galaxy Z Fold5.",
+        price: 1399.99,
         imageUrl:
-          "https://m.media-amazon.com/images/I/51AN8ExPAVL._AC_UF894,1000_QL80_.jpg",
-        category: "Electronics",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6548/6548843_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Smartphone",
       }),
       createProduct({
-        name: "Portable Bluetooth Speaker",
-        description: "Portable Wireless Bluetooth 5.0 Speaker",
-        price: 44.99,
-        imageUrl:
-          "https://m.media-amazon.com/images/I/81-AAu018UL._AC_UF894,1000_QL80_.jpg",
-        category: "Electronics",
-      }),
-      createProduct({
-        name: "GoPro HERO12 Black",
-        description: "Waterproof Action Camera with 5.3K60 Ultra HD Video",
-        price: 349.0,
-        imageUrl:
-          "https://m.media-amazon.com/images/I/71p5V8+OnfL._AC_UF894,1000_QL80_.jpg",
-        category: "Electronics",
-      }),
-      createProduct({
-        name: "Security Camera",
-        description: "Security Camera Outdoor Wired with Night Vision Color",
-        price: 31.99,
-        imageUrl:
-          "https://m.media-amazon.com/images/I/61c3t9sd5tL._AC_UF894,1000_QL80_.jpg",
-        category: "Electronics",
-      }),
-      createProduct({
-        name: "Neck Massager",
-        description: "Nekteck Shiatsu Deep Kneading Massage Pillow with Heat",
-        price: 49.99,
-        imageUrl:
-          "https://m.media-amazon.com/images/I/71TmeJpNJCL._AC_UF1000,1000_QL80_.jpg",
-        category: "Electronics",
-      }),
-      createProduct({
-        name: "Car Charger",
-        description: "Car Charger, 67W 3-Port Compact Fast Charger",
-        price: 39.99,
-        imageUrl:
-          "https://m.media-amazon.com/images/I/61fcdbI0u7L._AC_UF894,1000_QL80_.jpg",
-        category: "Electronics",
-      }),
-      createProduct({
-        name: "Striped Crew Neck Tee",
+        name: "Samsung - Galaxy S24 256GB - Onyx Black",
         description:
-          "Add a touch of sophistication to your casual ensemble with this striped crew neck tee",
-        price: 14.99,
+          "The new era of mobile AI is here. Make every day epic with Galaxy S24. See a delicious looking dish on your social feed but don’t see a recipe? Simply Circle to Search with Google to find it in seconds. Then head to a sunny farmer’s market to pick up the ingredients and see your list clearly on the bright, adaptive display of Galaxy S24. Once the meal is ready, capture stunning close ups of your dish and dinner guests, no matter the lighting, with a high res camera and Nightography. And all the while, you can stay plugged into the moment, not the outlet, with a long lasting battery. Do more easily with Galaxy S24. Galaxy AI is here. ",
+        price: 759.99,
         imageUrl:
-          "https://ae01.alicdn.com/kf/Scea2937b867c4a0d8a1863859aa4fdc5I.jpg_640x640Q90.jpg_.webp",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6569/6569842_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Smartphone",
       }),
       createProduct({
-        name: "Long Sleeve Shirt",
+        name: "PlayStation 5 Slim Console Digital Edition",
         description:
-          "Transition seamlessly from day to night with this black long sleeve shirt, a versatile addition to your wardrobe",
-        price: 9.99,
+          "Vertical stand not included. Experience Marvel’s Spider-Man 2 with PS5 innovations. Feel the force of web-swinging with adaptive triggers, while haptic feedback responds to Peter Parker’s new symbiote abilities and Miles Morales’ evolved bio-electric skills. ",
+        price: 399.99,
         imageUrl:
-          "https://allmade.com/cdn/shop/products/unisexspaceblackLS2_900x.jpg?v=1590732459",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6576/6576536cv11d.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Gaming",
       }),
       createProduct({
-        name: "V-Neck Cotton Tee",
+        name: "Microsoft - Xbox Series S 512GB All-Digital (Disc-Free Gaming) - White",
         description:
-          "Upgrade your basics with this V-neck tee, crafted from soft cotton for superior comfort",
-        price: 13.99,
+          "Jump into the world of Xbox with the Xbox Series S – Starter Bundle. Includes everything you need to play with a next-gen console and 3 months of Game Pass Ultimate. Be the first to play next-generation games that come to life on your Xbox Series S like Starfield and Forza Motorsport on day one. Plus, enjoy hundreds of other high-quality games like Minecraft Legends, Halo Infinite, and Forza Horizon 5 on Xbox Series S, PC, and cloud.",
+        price: 299.99,
         imageUrl:
-          "https://www.cottonheritage.com/catImg/WAMHIRES/mc1047_120122165339.jpg",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6558/6558673cv11d.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Gaming",
       }),
       createProduct({
-        name: "Black Zip-Up Hoodie",
+        name: "Nintendo - Switch with Neon Blue and Neon Red Joy‑Con",
         description:
-          "Versatile black zip-up hoodie, perfect for layering or casual wear",
-        price: 32.99,
+          "Play at home or on the go with one system. The Nintendo Switch system is designed to go wherever you do, instantly transforming from a home console you play on TV to a portable system you can play anywhere. So you get more time to play the games you love, however you like. Enjoy three modes in one system.",
+        price: 299.99,
         imageUrl:
-          "https://m.media-amazon.com/images/I/61KqH6G5s3L._AC_UY1000_.jpg",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6522/6522225_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Gaming",
       }),
       createProduct({
-        name: "Graphic Print Muscle Tank",
+        name: "ASUS - ROG Ally 7 120Hz FHD 1080p Gaming Handheld - AMD Ryzen Z1 Processor - 512GB - White",
         description:
-          "Stay cool and stylish during workouts with this muscle tank featuring a trendy",
-        price: 9.99,
+          "Play your way with the ROG Ally gaming handheld. Access any game that runs on Windows across all game platforms, including Steam, GOG, Xbox Game Pass, cloud gaming services, Android apps and more. ",
+        price: 399.99,
         imageUrl:
-          "https://ae01.alicdn.com/kf/S3b9d76db6b164cb7bdd8cd7ff2f41f9ey.jpg_640x640Q90.jpg_.webp",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6543/6543664cv19d.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Gaming",
       }),
       createProduct({
-        name: "Sweatshirt",
+        name: "Sony - Alpha 7 IV Full-frame Mirrorless Interchangeable Lens Camera with SEL2870 Lens - Black",
         description:
-          "Cozy sweatshirt, great for layering during colder weather",
-        price: 34.99,
+          "Sony Alpha 7 IV Full-frame Mirrorless Interchangeable Lens Camera - a true hybrid with 33MP Exmor R™ sensor, 8x faster BIONZ XR™ processor, up to 10 fps with continuous AF/AE tracking, 4K 60p and 15+ stops dynamic range ",
+        price: 2699.99,
         imageUrl:
-          "https://sanvt.com/cdn/shop/products/SANVT_men_sweatshirt_grey_1.jpg?v=1665759687",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6486/6486185_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Camera",
       }),
       createProduct({
-        name: "Polo Shirt",
+        name: "Canon - EOS Rebel T7 DSLR Video Two Lens Kit with EF-S 18-55mm and EF 75-300mm Lenses",
         description:
-          "Classic polo shirt with a timeless design, suitable for various occasions",
-        price: 29.99,
+          "Take stunning pictures with vibrant colors using this EOS Rebel T7 camera. The built-in Wi-Fi makes printing and sharing pictures quick and easy, and the auto-focus system creates crisp images at a moment's notice. This EOS Rebel T7 camera takes Full HD video, allowing experiences to be captured with quality.",
+        price: 599.99,
         imageUrl:
-          "https://i.pinimg.com/474x/83/5c/3c/835c3cf34b3a3c622c7cb81be90c1970.jpg",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6323/6323759_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Camera",
       }),
       createProduct({
-        name: "Leather Jacket",
+        name: "Canon - EOS R100 4K Video Mirrorless Camera with RF-S 18-45mm f/4.5-6.3 IS STM Lens - Black",
         description:
-          "Timeless black leather jacket, ideal for adding a rugged edge to any outfit",
-        price: 99.99,
+          "Experience the fun of RF mount content creation with the smallest and lightest EOS R series camera¹, the Canon EOS R100. Excellent still-image capabilities start with its 24.1 Megapixel APS-C size CMOS Image sensor and DIGIC 8 processor, along with Dual Pixel CMOS AF with the ability to detect human faces and focus on their eyes. The EOS R100 also can record Full HD video at up to 60 frames per second, and detailed, high-res 4K from the central area of the sensor at 24 frames per second. The versatility and small size of the RF-S18-45mm F4.5-6.3 IS STM lens gives you the flexibility you desire without taking up your whole camera bag. ",
+        price: 499.99,
         imageUrl:
-          "https://teenavi.com/wp-content/uploads/2023/06/t-shirt-and-jeans-outfit-16.jpg",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6546/6546137_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Camera",
       }),
       createProduct({
-        name: "Slim Fit Black Jeans",
-        description: "Stylish slim-fit black jeans, crafted from premium denim",
-        price: 39.99,
+        name: "Sony - ZV-1F Vlog Camera for Content Creators and Vloggers - Black",
+        description:
+          "Sony ZV-1F Vlog camera for Content Creators and Vloggers, large 1-inch sensor with wide angle 20mm1 lens and packed with easy-to-use features, specifically designed for vloggers and online video creators.  ",
+        price: 499.99,
         imageUrl:
-          "https://teenavi.com/wp-content/uploads/2022/08/skinny-jeans-and-t-shirt-outfit-2.jpg",
-        category: "Men",
-      }),
-      createProduct({
-        name: "T-Shirt, Black",
-        description: "Classic black cotton t-shirt, perfect for everyday wear",
-        price: 15.99,
-        imageUrl:
-          "https://teenavi.com/wp-content/uploads/2022/08/black-t-shirt-outfit-3.jpg",
-        category: "Men",
+          "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6522/6522416_sd.jpg;maxHeight=640;maxWidth=550",
+        category_name: "Camera",
       }),
     ]);
 
-    return { user, categories, products };
+    return { user, products, categories };
   } catch (err) {
     console.error("error initializing dummy data", err);
   }

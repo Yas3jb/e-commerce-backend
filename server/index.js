@@ -1,5 +1,4 @@
 // Import Express module
-const e = require("express");
 const express = require("express");
 // Import cors module
 const cors = require("cors");
@@ -24,12 +23,12 @@ const {
   deleteCart, // Function to delete the shopping cart
   authenticate, // Function to authenticate a user
   findUserByToken, // Function to find a user by their authentication token
-  fetchCategories, // Function to fetch all categories
-  fetchCategoryByID, // Function to retrieve categories by its ID
+  createCategories, // Function to create a new category
+  fetchCategories, // Function to fetch a list of categories
+  fetchCategoryByID, // Function to fetch a category by its ID
 } = require("./db");
 // Import dummyData object from the "./data" module
 const { dummyData } = require("./data");
-const { log } = require("console");
 
 // static routes here (you only need these for deployment)
 app.use(express.static(path.join(__dirname, "../client/dist")));
@@ -42,9 +41,7 @@ app.get("/", (req, res) =>
 // Middleware function to check if a user is logged in
 const isLoggedIn = async (req, res, next) => {
   try {
-    const { user, cart } = await findUserByToken(req.headers.authorization);
-    req.user = user;
-    req.cart = cart;
+    req.user = await findUserByToken(req.headers.authorization);
     next();
   } catch (err) {
     next(err);
@@ -72,7 +69,7 @@ app.post("/api/auth/login", async (req, res, next) => {
 // GET to retrieve user info
 app.get("/api/auth/me", isLoggedIn, async (req, res, next) => {
   try {
-    res.send({ user: req.user, cart: req.cart });
+    res.send(await findUserByToken(req.headers.authorization));
   } catch (err) {
     next(err);
   }
@@ -103,20 +100,7 @@ app.get("/api/products", async (req, res, next) => {
 // GET Single Product
 app.get("/api/products/:id", async (req, res, next) => {
   try {
-    const singleProduct = await fetchProductByID(req.params.id);
-    res.send(singleProduct);
-  } catch (err) {
-    // error handling
-    res.status(500).json({ error: "Failed to load the product" });
-    next(err);
-  }
-});
-
-// GET Single Category
-app.get("/api/category/:id", async (req, res, next) => {
-  try {
-    const singleCategory = await fetchCategoryByID(req.params.id);
-    res.send(singleCategory);
+    res.send(await fetchProductByID(req.params.id));
   } catch (err) {
     // error handling
     res.status(500).json({ error: "Failed to load the product" });
@@ -125,12 +109,23 @@ app.get("/api/category/:id", async (req, res, next) => {
 });
 
 // GET Categories
-app.get("/api/category", async (req, res, next) => {
+app.get("/api/categories", async (req, res, next) => {
   try {
     res.send(await fetchCategories());
   } catch (err) {
     // error handling
-    res.status(500).json({ error: "Failed to load products" });
+    res.status(500).json({ error: "Failed to load categories" });
+    next(err);
+  }
+});
+
+// GET Single category
+app.get("/api/categories/:name", async (req, res, next) => {
+  try {
+    res.send(await fetchCategoryByID(req.params.name));
+  } catch (err) {
+    // error handling
+    res.status(500).json({ error: "Failed to load the category" });
     next(err);
   }
 });
@@ -143,8 +138,7 @@ app.get("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
       error.status = 401;
       throw error;
     }
-    const cartItems = await fetchCart(req.params.id);
-    res.send(cartItems);
+    res.send(await fetchCart(req.params.id));
   } catch (err) {
     next(err);
   }
