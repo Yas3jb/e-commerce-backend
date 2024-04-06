@@ -23,6 +23,9 @@ const {
   deleteCart, // Function to delete the shopping cart
   authenticate, // Function to authenticate a user
   findUserByToken, // Function to find a user by their authentication token
+  createCategories, // Function to create a new category
+  fetchCategories, // Function to fetch a list of categories
+  fetchCategoryByID, // Function to fetch a category by its ID
 } = require("./db");
 // Import dummyData object from the "./data" module
 const { dummyData } = require("./data");
@@ -38,9 +41,7 @@ app.get("/", (req, res) =>
 // Middleware function to check if a user is logged in
 const isLoggedIn = async (req, res, next) => {
   try {
-    const { user, cart } = await findUserByToken(req.headers.authorization);
-    req.user = user;
-    req.cart = cart;
+    req.user = await findUserByToken(req.headers.authorization);
     next();
   } catch (err) {
     next(err);
@@ -68,7 +69,7 @@ app.post("/api/auth/login", async (req, res, next) => {
 // GET to retrieve user info
 app.get("/api/auth/me", isLoggedIn, async (req, res, next) => {
   try {
-    res.send({ user: req.user, cart: req.cart });
+    res.send(await findUserByToken(req.headers.authorization));
   } catch (err) {
     next(err);
   }
@@ -99,11 +100,32 @@ app.get("/api/products", async (req, res, next) => {
 // GET Single Product
 app.get("/api/products/:id", async (req, res, next) => {
   try {
-    const singleProduct = await fetchProductByID(req.params.id);
-    res.send(singleProduct);
+    res.send(await fetchProductByID(req.params.id));
   } catch (err) {
     // error handling
     res.status(500).json({ error: "Failed to load the product" });
+    next(err);
+  }
+});
+
+// GET Categories
+app.get("/api/categories", async (req, res, next) => {
+  try {
+    res.send(await fetchCategories());
+  } catch (err) {
+    // error handling
+    res.status(500).json({ error: "Failed to load categories" });
+    next(err);
+  }
+});
+
+// GET Single category
+app.get("/api/categories/:name", async (req, res, next) => {
+  try {
+    res.send(await fetchCategoryByID(req.params.name));
+  } catch (err) {
+    // error handling
+    res.status(500).json({ error: "Failed to load the category" });
     next(err);
   }
 });
@@ -116,8 +138,7 @@ app.get("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
       error.status = 401;
       throw error;
     }
-    const cartItems = await fetchCart(req.params.id);
-    res.send(cartItems);
+    res.send(await fetchCart(req.params.id));
   } catch (err) {
     next(err);
   }
@@ -173,6 +194,8 @@ const init = async () => {
 
   // Initialize dummy data
   await dummyData();
+  console.log("dummy data created");
+
   // Express server to listen
   app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 };
