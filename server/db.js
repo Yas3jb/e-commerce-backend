@@ -40,6 +40,7 @@ const createTables = async () => {
         description TEXT,
         price DECIMAL(10,2) NOT NULL,
         imageUrl VARCHAR(255),
+        rating DECIMAL(3,1) NOT NULL,
         category_name VARCHAR REFERENCES categories(name) NOT NULL
     );
 
@@ -77,10 +78,11 @@ const createProduct = async ({
   description,
   price,
   imageUrl,
+  rating,
   category_name,
 }) => {
   const SQL = `
-    INSERT INTO products(id, name, description, price, imageUrl, category_name) VALUES($1, $2, $3, $4, $5, $6) RETURNING *
+    INSERT INTO products(id, name, description, price, imageUrl, rating, category_name) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *
   `;
   const response = await client.query(SQL, [
     uuid.v4(),
@@ -88,6 +90,7 @@ const createProduct = async ({
     description,
     price,
     imageUrl,
+    rating,
     category_name,
   ]);
   return response.rows[0];
