@@ -10,6 +10,8 @@ app.use(cors());
 // Import path
 const path = require("path");
 
+require("dotenv").config();
+
 // Import functions from "./db" file
 const {
   client,
@@ -23,7 +25,6 @@ const {
   deleteCart, // Function to delete the shopping cart
   authenticate, // Function to authenticate a user
   findUserByToken, // Function to find a user by their authentication token
-  createCategories, // Function to create a new category
   fetchCategories, // Function to fetch a list of categories
   fetchCategoryByID, // Function to fetch a category by its ID
 } = require("./db");
@@ -37,6 +38,46 @@ app.use(express.static(path.join(__dirname, "../client/dist")));
 app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "../client/dist/index.html"))
 );
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
+
+// Stripe
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+
+app.post("/api/checkout", async (req, res) => {
+  try {
+    const products = await fetchProducts();
+
+    const lineItems = products.map((product) => ({
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: product.name,
+          images: [product.imageurl],
+        },
+        unit_amount: product.price * 100,
+      },
+      quantity: 1,
+    }));
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "payment",
+      success_url: "http://localhost:5173/success",
+      cancel_url: "http://localhost:5173/cancel",
+    });
+
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error("Error creating checkout session:", err);
+    res.status(500).json({ error: "An error occurred during checkout" });
+  }
+});
 
 // Middleware function to check if a user is logged in
 const isLoggedIn = async (req, res, next) => {
