@@ -236,6 +236,7 @@ const init = async () => {
   // Initialize dummy data
   await dummyData();
   console.log("dummy data created");
+
   // Express server to listen
   app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 };
