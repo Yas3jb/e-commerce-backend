@@ -66,8 +66,8 @@ app.post("/api/checkout", async (req, res) => {
       // Products to be purchased
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:5173/success",
-      cancel_url: "http://localhost:5173/cancel",
+      success_url: "https://yas-y-tech.netlify.app/success",
+      cancel_url: "https://yas-y-tech.netlify.app/cancel",
     });
     // Respond with the URL to redirect the user to the checkout page
     res.json({ url: session.url });
