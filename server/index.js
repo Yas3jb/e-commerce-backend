@@ -47,11 +47,12 @@ app.use(
 
 // Stripe
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
-
+// Route to handle checkout process
 app.post("/api/checkout", async (req, res) => {
   try {
+    // Fetch products from database
     const products = await fetchProducts();
-
+    // Construct line items for Stripe checkout session
     const lineItems = products.map((product) => ({
       price_data: {
         currency: "usd",
@@ -59,19 +60,22 @@ app.post("/api/checkout", async (req, res) => {
           name: product.name,
           images: [product.imageurl],
         },
+        // Converting price to cents
         unit_amount: product.price * 100,
       },
       quantity: 1,
     }));
-
+    // Create a new checkout session with Stripe
     const session = await stripe.checkout.sessions.create({
+      // Payment method types accepted
       payment_method_types: ["card"],
+      // Products to be purchased
       line_items: lineItems,
       mode: "payment",
       success_url: "http://localhost:5173/success",
       cancel_url: "http://localhost:5173/cancel",
     });
-
+    // Respond with the URL to redirect the user to the checkout page
     res.json({ url: session.url });
   } catch (err) {
     console.error("Error creating checkout session:", err);
