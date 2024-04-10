@@ -39,12 +39,6 @@ app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "../client/dist/index.html"))
 );
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-  })
-);
-
 // Stripe
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 // Route to handle checkout process
