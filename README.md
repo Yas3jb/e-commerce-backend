@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is an E-Commerce API built with Node.js and PostgreSQL, providing functionalities for user authentication, product management, cart management, and more.
+This project is an E-Commerce API built with Node.js and PostgreSQL, providing functionalities for user authentication, product management, cart management, and more
 
 ## Authentication
 

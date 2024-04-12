@@ -127,6 +127,16 @@ const deleteCart = async ({ user_id, id }) => {
   await client.query(SQL, [user_id, id]);
 };
 
+// Update quantity of a product in the cart
+const updateCartQuantity = async (cartId, quantity) => {
+  const SQL = `
+    UPDATE cart 
+    SET quantity = $1
+    WHERE id = $2
+  `;
+  await client.query(SQL, [quantity, cartId]);
+};
+
 // Authenticate a user based on email and password
 const authenticate = async ({ email, password }) => {
   const SQL = `
@@ -249,4 +259,5 @@ module.exports = {
   createCategories,
   fetchCategories,
   fetchCategoryByID,
+  updateCartQuantity,
 };
