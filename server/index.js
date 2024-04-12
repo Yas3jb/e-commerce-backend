@@ -27,6 +27,7 @@ const {
   findUserByToken, // Function to find a user by their authentication token
   fetchCategories, // Function to fetch a list of categories
   fetchCategoryByID, // Function to fetch a category by its ID
+  updateCartQuantity, // Function to update
 } = require("./db");
 // Import dummyData object from the "./data" module
 const { dummyData } = require("./data");
@@ -37,12 +38,6 @@ app.use(express.static(path.join(__dirname, "../client/dist")));
 // app routes here
 app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "../client/dist/index.html"))
-);
-
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-  })
 );
 
 // Stripe
@@ -72,8 +67,8 @@ app.post("/api/checkout", async (req, res) => {
       // Products to be purchased
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:5173/success",
-      cancel_url: "http://localhost:5173/cancel",
+      success_url: "https://yas-y-tech.netlify.app/success",
+      cancel_url: "https://yas-y-tech.netlify.app/cancel",
     });
     // Respond with the URL to redirect the user to the checkout page
     res.json({ url: session.url });
@@ -176,30 +171,20 @@ app.get("/api/categories/:name", async (req, res, next) => {
 });
 
 // GET items in cart
-app.get("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
+app.get("/api/cart/:id", isLoggedIn, async (req, res, next) => {
   try {
-    if (req.params.id !== req.user.id) {
-      const error = Error("not authorized");
-      error.status = 401;
-      throw error;
-    }
-    res.send(await fetchCart(req.params.id));
+    res.send(await fetchCart(req.user.id));
   } catch (err) {
     next(err);
   }
 });
 
 // POST items in cart
-app.post("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
+app.post("/api/cart", isLoggedIn, async (req, res, next) => {
   try {
-    if (req.params.id !== req.user.id) {
-      const error = Error("not authorized");
-      error.status = 401;
-      throw error;
-    }
     res.status(201).send(
       await createCart({
-        user_id: req.params.id,
+        user_id: req.user.id,
         product_id: req.body.product_id,
         quantity: req.body.quantity,
       })
@@ -209,24 +194,29 @@ app.post("/api/users/:id/cart", isLoggedIn, async (req, res, next) => {
   }
 });
 
-// DELETE products in the cart
-app.delete(
-  "/api/users/:user_id/cart/:id",
-  isLoggedIn,
-  async (req, res, next) => {
-    try {
-      if (req.params.user_id !== req.user.id) {
-        const error = Error("not authorized");
-        error.status = 401;
-        throw error;
-      }
-      await deleteCart({ user_id: req.params.user_id, id: req.params.id });
-      res.sendStatus(204);
-    } catch (err) {
-      next(err);
-    }
+// PUT update quantity of a product in the cart
+app.put("/api/cart/:id", isLoggedIn, async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    await updateCartQuantity(id, quantity);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
   }
-);
+});
+
+// DELETE products in the cart
+app.delete("/api/cart/:id", isLoggedIn, async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const cartItemId = req.params.id;
+    await deleteCart({ user_id: userId, id: cartItemId });
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // Create init function
 const init = async () => {
